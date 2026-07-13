@@ -11,3 +11,11 @@ export function formatElapsed(iso: string | null, now: number): string {
   if (h === 0) return `${m}m`;
   return `${h}h ${m}m`;
 }
+
+export function formatDuration(startIso: string, endIso: string): string {
+  return formatElapsed(startIso, new Date(endIso).getTime());
+}
+
+export function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}

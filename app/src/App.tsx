@@ -19,7 +19,7 @@ function App() {
   const { employees, signInOrOut, addEmployee, removeEmployee } = useAttendance();
   const { guests, signInGuest, signOutGuest } = useGuests();
   const signedInEmployees = employees.filter((e) => e.signedIn);
-  const { muster, roster, startMuster, endMuster, toggleAccounted } = useMuster(
+  const { muster, roster, startMuster, endMuster, toggleAccounted, updateNotes } = useMuster(
     signedInEmployees,
     guests,
   );
@@ -56,6 +56,7 @@ function App() {
                 startMuster={startMuster}
                 endMuster={endMuster}
                 toggleAccounted={toggleAccounted}
+                updateNotes={updateNotes}
               />
             )}
             {tab === 'admin' && (

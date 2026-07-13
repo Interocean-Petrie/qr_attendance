@@ -9,6 +9,31 @@ export interface MusterRosterRow {
   caption: string;
 }
 
+function mapRosterRow(r: any): MusterRosterRow {
+  if (r.employees) {
+    return { id: r.id, accounted: r.accounted, name: r.employees.name, caption: r.employees.role };
+  }
+  const guest = r.guest_visits;
+  return {
+    id: r.id,
+    accounted: r.accounted,
+    name: guest?.name ?? 'Unknown guest',
+    caption: guest ? `Guest · visiting ${guest.host}` : 'Guest',
+  };
+}
+
+export async function fetchMusterRoster(musterId: string): Promise<MusterRosterRow[]> {
+  const { data, error } = await supabase
+    .from('muster_roster')
+    .select('id, accounted, employees(name, role), guest_visits(name, company, host)')
+    .eq('muster_id', musterId);
+  if (error) {
+    console.error('Failed to load muster roster', error);
+    return [];
+  }
+  return (data ?? []).map(mapRosterRow);
+}
+
 export function useMuster(signedInEmployees: EmployeeStatus[], onSiteGuests: Guest[]) {
   const [muster, setMuster] = useState<Muster | null>(null);
   const [roster, setRoster] = useState<MusterRosterRow[]>([]);
@@ -34,30 +59,7 @@ export function useMuster(signedInEmployees: EmployeeStatus[], onSiteGuests: Gue
       return;
     }
 
-    const { data: rosterRows, error: rosterError } = await supabase
-      .from('muster_roster')
-      .select('id, accounted, employees(name, role), guest_visits(name, company, host)')
-      .eq('muster_id', activeMuster.id);
-
-    if (rosterError) {
-      console.error('Failed to load muster roster', rosterError);
-      return;
-    }
-
-    setRoster(
-      (rosterRows ?? []).map((r: any) => {
-        if (r.employees) {
-          return { id: r.id, accounted: r.accounted, name: r.employees.name, caption: r.employees.role };
-        }
-        const guest = r.guest_visits;
-        return {
-          id: r.id,
-          accounted: r.accounted,
-          name: guest?.name ?? 'Unknown guest',
-          caption: guest ? `Guest · visiting ${guest.host}` : 'Guest',
-        };
-      }),
-    );
+    setRoster(await fetchMusterRoster(activeMuster.id));
   }, []);
 
   useEffect(() => {
@@ -107,5 +109,14 @@ export function useMuster(signedInEmployees: EmployeeStatus[], onSiteGuests: Gue
     if (error) throw error;
   }, []);
 
-  return { muster, roster, startMuster, endMuster, toggleAccounted };
+  const updateNotes = useCallback(
+    async (notes: string) => {
+      if (!muster) return;
+      const { error } = await supabase.from('musters').update({ notes }).eq('id', muster.id);
+      if (error) throw error;
+    },
+    [muster],
+  );
+
+  return { muster, roster, startMuster, endMuster, toggleAccounted, updateNotes };
 }

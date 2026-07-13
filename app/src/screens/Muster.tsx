@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MusterRosterRow } from '../hooks/useMuster';
 import type { Muster as MusterType } from '../types';
 import { formatTime } from '../lib/format';
 import { AlertCircleIcon, CheckIcon } from '../components/Icons';
+import { MusterHistory } from './MusterHistory';
 
 interface Props {
   occupancyCount: number;
@@ -11,6 +12,42 @@ interface Props {
   startMuster: () => Promise<void>;
   endMuster: () => Promise<void>;
   toggleAccounted: (rosterId: string, accounted: boolean) => Promise<void>;
+  updateNotes: (notes: string) => Promise<void>;
+}
+
+function NotesField({
+  musterId,
+  initialNotes,
+  updateNotes,
+}: {
+  musterId: string;
+  initialNotes: string | null;
+  updateNotes: (notes: string) => Promise<void>;
+}) {
+  const [value, setValue] = useState(initialNotes ?? '');
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    setValue(initialNotes ?? '');
+  }, [musterId]);
+
+  const onChange = (next: string) => {
+    setValue(next);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => updateNotes(next), 800);
+  };
+
+  return (
+    <div className="io-admin-section" style={{ borderBottom: 'none' }}>
+      <div className="io-admin-eyebrow">Additional people present (not signed in)</div>
+      <textarea
+        className="io-textarea"
+        placeholder="Names of anyone found at the muster point who wasn't signed in"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
 }
 
 export function Muster({
@@ -20,8 +57,14 @@ export function Muster({
   startMuster,
   endMuster,
   toggleAccounted,
+  updateNotes,
 }: Props) {
   const [busy, setBusy] = useState(false);
+  const [view, setView] = useState<'roll-call' | 'history'>('roll-call');
+
+  if (view === 'history') {
+    return <MusterHistory onBack={() => setView('roll-call')} />;
+  }
 
   if (!muster) {
     return (
@@ -49,6 +92,11 @@ export function Muster({
         >
           Start Muster
         </button>
+        <div style={{ marginTop: 16 }}>
+          <button className="io-reset-link" onClick={() => setView('history')}>
+            View past musters
+          </button>
+        </div>
       </div>
     );
   }
@@ -94,6 +142,7 @@ export function Muster({
           </span>
         </div>
       ))}
+      <NotesField musterId={muster.id} initialNotes={muster.notes} updateNotes={updateNotes} />
       <div className="io-muster-footer">
         <button
           className="io-btn-outline"
@@ -109,6 +158,11 @@ export function Muster({
         >
           End Muster
         </button>
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <button className="io-reset-link" onClick={() => setView('history')}>
+            View past musters
+          </button>
+        </div>
       </div>
     </div>
   );

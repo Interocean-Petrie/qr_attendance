@@ -408,6 +408,22 @@ select.io-input:focus {
   outline: 2px solid var(--io-bright-blue);
   outline-offset: -1px;
 }
+.io-textarea {
+  width: 100%;
+  min-height: 84px;
+  padding: 10px 12px;
+  border: 1px solid var(--io-border);
+  border-radius: var(--io-radius-sm);
+  font-family: var(--io-font-sans);
+  font-size: 14px;
+  color: var(--io-navy);
+  background: var(--io-white);
+  resize: vertical;
+}
+.io-textarea:focus {
+  outline: 2px solid var(--io-bright-blue);
+  outline-offset: -1px;
+}
 .io-btn-primary.with-icon {
   display: flex;
   align-items: center;

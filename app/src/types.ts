@@ -22,6 +22,7 @@ export interface Muster {
   id: string;
   started_at: string;
   ended_at: string | null;
+  notes: string | null;
 }
 
 /** A person currently in the building — either staff or a guest, unified for Occupancy/Muster. */
