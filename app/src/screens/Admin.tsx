@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { EmployeeStatus } from '../types';
 import { PlusIcon, TrashIcon } from '../components/Icons';
+import { EmployeeLog } from './EmployeeLog';
 
 interface Props {
   employees: EmployeeStatus[];
@@ -13,6 +14,7 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
   const [role, setRole] = useState('');
   const [busy, setBusy] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [viewingLog, setViewingLog] = useState<EmployeeStatus | null>(null);
 
   const handleAdd = async () => {
     const trimmedName = name.trim();
@@ -37,6 +39,10 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
     }
   };
 
+  if (viewingLog) {
+    return <EmployeeLog employee={viewingLog} onBack={() => setViewingLog(null)} />;
+  }
+
   return (
     <div>
       <div className="io-admin-section">
@@ -60,7 +66,12 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
       </div>
       <div className="io-section-label">Staff ({employees.length})</div>
       {employees.map((emp) => (
-        <div key={emp.id} className="io-list-row">
+        <div
+          key={emp.id}
+          className="io-list-row"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setViewingLog(emp)}
+        >
           <div style={{ minWidth: 0 }}>
             <div className="io-list-name">{emp.name}</div>
             <div className="io-row-caption">{emp.role}</div>
@@ -68,7 +79,10 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
           <button
             className="io-remove-btn"
             disabled={removingId === emp.id}
-            onClick={() => handleRemove(emp.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRemove(emp.id);
+            }}
           >
             <TrashIcon />
           </button>
