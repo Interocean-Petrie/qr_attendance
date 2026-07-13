@@ -1,0 +1,93 @@
+/* Interocean Design System tokens — mirrored from the design handoff's
+   colors_and_type.css. Three colours, one typeface. */
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('./assets/fonts/Outfit-VariableFont_wght.ttf') format('truetype-variations'),
+       url('./assets/fonts/Outfit-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --io-navy: #2A4066;
+  --io-bright-blue: #055EDD;
+  --io-blue-grey: #5479A1;
+  --io-white: #FFFFFF;
+
+  --io-navy-90: rgba(42, 64, 102, 0.90);
+  --io-navy-60: rgba(42, 64, 102, 0.60);
+  --io-navy-30: rgba(42, 64, 102, 0.30);
+  --io-navy-12: rgba(42, 64, 102, 0.12);
+  --io-navy-06: rgba(42, 64, 102, 0.06);
+
+  --io-bright-blue-darker: #0449B0;
+  --io-bright-blue-darkest: #033685;
+  --io-bright-blue-12: rgba(5, 94, 221, 0.12);
+
+  --io-blue-grey-60: rgba(84, 121, 161, 0.60);
+  --io-blue-grey-30: rgba(84, 121, 161, 0.30);
+  --io-blue-grey-20: rgba(84, 121, 161, 0.20);
+  --io-blue-grey-10: rgba(84, 121, 161, 0.10);
+
+  --io-fg-1: var(--io-navy);
+  --io-fg-2: var(--io-blue-grey);
+  --io-fg-on-dark: var(--io-white);
+
+  --io-bg-1: var(--io-white);
+  --io-bg-2: #F6F8FB;
+  --io-bg-dark: var(--io-navy);
+
+  --io-border: var(--io-blue-grey-20);
+  --io-border-strong: var(--io-navy);
+
+  --io-font-sans: 'Outfit', Arial, Helvetica, sans-serif;
+
+  --io-weight-light: 300;
+  --io-weight-regular: 400;
+  --io-weight-medium: 500;
+  --io-weight-semibold: 600;
+
+  --io-radius-xs: 2px;
+  --io-radius-sm: 4px;
+  --io-radius-md: 8px;
+  --io-radius-lg: 16px;
+  --io-radius-full: 9999px;
+
+  --io-shadow-sm: 0 1px 2px rgba(42,64,102,0.06), 0 1px 3px rgba(42,64,102,0.08);
+  --io-shadow-md: 0 4px 6px rgba(42,64,102,0.05), 0 10px 15px rgba(42,64,102,0.08);
+  --io-shadow-lg: 0 25px 50px rgba(42,64,102,0.18);
+
+  --io-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --io-duration-1: 150ms;
+  --io-duration-2: 250ms;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--io-fg-1);
+  background: var(--io-bg-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, select {
+  font-family: var(--io-font-sans);
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/interocean-design-system-a644d27d-7ee9-46b9-bb47-457ac7b2c3dd/colors_and_type.css">
+  <script src="_ds/interocean-design-system-a644d27d-7ee9-46b9-bb47-457ac7b2c3dd/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+<div style="min-height:100vh; width:100%; background:var(--io-bg-2); display:flex; align-items:center; justify-content:center; padding:40px 20px; font-family:var(--io-font-sans);">
+  <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+
+    <div style="height:100%; width:100%; position:relative; display:flex; flex-direction:column; background:var(--io-bg-1); overflow:hidden;">
+
+      <!-- Header -->
+      <div style="flex-shrink:0; padding:56px 20px 18px; background:var(--io-navy); color:var(--io-white);">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="font-size:14px; font-weight:500; letter-spacing:0.02em; color:var(--io-white);">Interocean</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.65);">{{ clockLabel }}</div>
+        </div>
+        <div style="font-size:24px; font-weight:300; margin-top:8px; line-height:1.15;">{{ screenTitle }}</div>
+        <div style="font-size:13px; color:rgba(255,255,255,0.65); margin-top:4px;">{{ screenSubtitle }}</div>
+      </div>
+
+      <!-- Scrollable content -->
+      <div style="flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch;">
+
+        <!-- SIGN IN / OUT -->
+        <sc-if value="{{ isSignin }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <sc-for list="{{ employees }}" as="emp" hint-placeholder-count="8">
+              <div onClick="{{ emp.onSelect }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px; border-bottom:1px solid var(--io-border); background:{{ emp.rowBg }}; cursor:pointer; transition:background 150ms var(--io-ease);">
+                <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+                  <span style="width:10px; height:10px; border-radius:50%; flex-shrink:0; background:{{ emp.dotBg }}; border:1.5px solid {{ emp.dotBorder }};"></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:16px; font-weight:400; color:var(--io-navy);">{{ emp.name }}</div>
+                    <div style="font-size:13px; color:var(--io-blue-grey); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ emp.roleLine }}</div>
+                  </div>
+                </div>
+                <span style="flex-shrink:0; font-size:12px; font-weight:500; padding:4px 10px; border-radius:9999px; background:{{ emp.tagBg }}; color:{{ emp.tagColor }};">{{ emp.tagLabel }}</span>
+              </div>
+              <sc-if value="{{ emp.isSelected }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px 20px 22px; background:var(--io-navy-06);">
+                  <button onClick="{{ emp.onConfirm }}" style="width:100%; height:52px; border:none; border-radius:4px; background:var(--io-bright-blue); color:var(--io-white); font-family:var(--io-font-sans); font-size:16px; font-weight:500; cursor:pointer; transition:background 150ms var(--io-ease);" style-hover="background:var(--io-bright-blue-darker);" style-active="background:var(--io-bright-blue-darkest);">{{ emp.actionLabel }}</button>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- OCCUPANCY -->
+        <sc-if value="{{ isOccupancy }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="padding:20px 20px 8px; display:flex; align-items:baseline; gap:8px;">
+              <span style="font-size:40px; font-weight:300; color:var(--io-navy); line-height:1;">{{ signedInCount }}</span>
+              <span style="font-size:16px; color:var(--io-blue-grey);">of {{ totalCount }} in the building</span>
+            </div>
+            <div style="display:flex; gap:10px; padding:12px 20px 20px;">
+              <sc-for list="{{ sectorStats }}" as="stat" hint-placeholder-count="3">
+                <div style="flex:1; background:var(--io-bg-2); border-radius:8px; padding:12px; text-align:center;">
+                  <div style="font-size:20px; font-weight:400; color:var(--io-navy);">{{ stat.count }}</div>
+                  <div style="font-size:11px; color:var(--io-blue-grey); margin-top:2px;">{{ stat.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="padding:4px 20px 10px; font-size:13px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--io-blue-grey);">In the building</div>
+            <sc-if value="{{ hasSignedIn }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ signedInList }}" as="emp" hint-placeholder-count="5">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-bottom:1px solid var(--io-border);">
+                  <div style="min-width:0;">
+                    <div style="font-size:15px; color:var(--io-navy);">{{ emp.name }}</div>
+                    <div style="font-size:13px; color:var(--io-blue-grey); margin-top:2px;">{{ emp.roleLine }}</div>
+                  </div>
+                  <div style="text-align:right; flex-shrink:0;">
+                    <div style="font-size:13px; color:var(--io-navy);">since {{ emp.since }}</div>
+                    <div style="font-size:12px; color:var(--io-blue-grey); margin-top:2px;">{{ emp.elapsed }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ noSignedIn }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:40px 20px; text-align:center; color:var(--io-blue-grey); font-size:14px;">No one is currently signed in.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- MUSTER -->
+        <sc-if value="{{ isMuster }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <sc-if value="{{ musterIdle }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:32px 24px; text-align:center;">
+                <div style="width:56px; height:56px; border-radius:16px; background:var(--io-navy-06); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--io-navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div style="font-size:20px; font-weight:400; color:var(--io-navy); margin-bottom:8px;">Start a muster</div>
+                <div style="font-size:14px; color:var(--io-blue-grey); line-height:1.5; margin-bottom:24px;">Creates a roll call of everyone currently signed in. Use this during a fire drill or emergency evacuation.</div>
+                <div style="font-size:13px; color:var(--io-blue-grey); margin-bottom:16px;">{{ signedInCount }} people currently signed in</div>
+                <button onClick="{{ startMuster }}" style="width:100%; height:52px; border:none; border-radius:4px; background:var(--io-bright-blue); color:var(--io-white); font-family:var(--io-font-sans); font-size:16px; font-weight:500; cursor:pointer;" style-hover="background:var(--io-bright-blue-darker);" style-active="background:var(--io-bright-blue-darkest);">Start Muster</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ musterActive }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="padding:20px 20px 16px;">
+                  <div style="font-size:13px; color:var(--io-blue-grey); margin-bottom:12px;">Roll call started at {{ musterStarted }}</div>
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px;">
+                    <span style="font-size:16px; color:var(--io-navy); font-weight:500;">{{ musterAccountedCount }} of {{ musterTotal }} accounted for</span>
+                  </div>
+                  <div style="height:8px; border-radius:9999px; background:var(--io-blue-grey-20); overflow:hidden;">
+                    <div style="height:100%; border-radius:9999px; background:var(--io-bright-blue); width:{{ musterProgressPct }}; transition:width 250ms var(--io-ease);"></div>
+                  </div>
+                </div>
+                <sc-if value="{{ allAccounted }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin:0 20px 16px; padding:14px 16px; background:var(--io-navy); border-radius:8px; display:flex; align-items:center; gap:10px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--io-white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span style="color:var(--io-white); font-size:14px; font-weight:500;">All accounted for</span>
+                  </div>
+                </sc-if>
+                <sc-for list="{{ musterRoster }}" as="r" hint-placeholder-count="6">
+                  <div onClick="{{ r.onToggle }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-bottom:1px solid var(--io-border); cursor:pointer; opacity:{{ r.rowOpacity }}; transition:opacity 150ms var(--io-ease);">
+                    <div style="min-width:0;">
+                      <div style="font-size:15px; color:var(--io-navy);">{{ r.name }}</div>
+                      <div style="font-size:13px; color:var(--io-blue-grey); margin-top:2px;">{{ r.roleLine }}</div>
+                    </div>
+                    <span style="flex-shrink:0; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:{{ r.circleBg }}; border:1.5px solid {{ r.circleBorder }};">
+                      <sc-if value="{{ r.accounted }}" hint-placeholder-val="{{ false }}">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--io-white)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </sc-if>
+                    </span>
+                  </div>
+                </sc-for>
+                <div style="padding:20px;">
+                  <button onClick="{{ endMuster }}" style="width:100%; height:48px; border:1px solid var(--io-navy); border-radius:4px; background:transparent; color:var(--io-navy); font-family:var(--io-font-sans); font-size:15px; font-weight:500; cursor:pointer;" style-hover="background:var(--io-navy-06);">End Muster</button>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ADMIN -->
+        <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="padding:20px; border-bottom:1px solid var(--io-border);">
+              <div style="font-size:13px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--io-blue-grey); margin-bottom:12px;">Add employee</div>
+              <input value="{{ formName }}" onChange="{{ setFormName }}" placeholder="Full name" style="width:100%; height:44px; padding:0 12px; border:1px solid var(--io-border); border-radius:4px; font-family:var(--io-font-sans); font-size:14px; color:var(--io-navy); margin-bottom:10px;" />
+              <input value="{{ formRole }}" onChange="{{ setFormRole }}" placeholder="Job title" style="width:100%; height:44px; padding:0 12px; border:1px solid var(--io-border); border-radius:4px; font-family:var(--io-font-sans); font-size:14px; color:var(--io-navy); margin-bottom:10px;" />
+              <select value="{{ formSector }}" onChange="{{ setFormSector }}" style="width:100%; height:44px; padding:0 12px; border:1px solid var(--io-border); border-radius:4px; font-family:var(--io-font-sans); font-size:14px; color:var(--io-navy); margin-bottom:12px; background:var(--io-white);">
+                <option value="Offshore">Offshore</option>
+                <option value="Maritime">Maritime</option>
+                <option value="Renewables">Renewables</option>
+              </select>
+              <button onClick="{{ addEmployee }}" style="width:100%; height:48px; border:none; border-radius:4px; background:var(--io-bright-blue); color:var(--io-white); font-family:var(--io-font-sans); font-size:15px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;" style-hover="background:var(--io-bright-blue-darker);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Employee
+              </button>
+            </div>
+            <div style="padding:14px 20px 6px; font-size:13px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--io-blue-grey);">Staff ({{ totalCount }})</div>
+            <sc-for list="{{ employees }}" as="emp" hint-placeholder-count="8">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-bottom:1px solid var(--io-border);">
+                <div style="min-width:0;">
+                  <div style="font-size:15px; color:var(--io-navy);">{{ emp.name }}</div>
+                  <div style="font-size:13px; color:var(--io-blue-grey); margin-top:2px;">{{ emp.roleLine }}</div>
+                </div>
+                <button onClick="{{ emp.onRemove }}" style="flex-shrink:0; width:36px; height:36px; border:none; background:transparent; border-radius:4px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--io-blue-grey);" style-hover="background:var(--io-navy-06); color:var(--io-navy);">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+            <div style="padding:24px 20px; text-align:center;">
+              <button onClick="{{ resetDemo }}" style="border:none; background:transparent; color:var(--io-blue-grey); font-family:var(--io-font-sans); font-size:13px; cursor:pointer; text-decoration:underline;">Reset demo data</button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <!-- Toast -->
+      <sc-if value="{{ toastMessage }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; left:20px; right:20px; bottom:84px; background:var(--io-navy); color:var(--io-white); padding:12px 16px; border-radius:8px; font-size:14px; text-align:center; box-shadow:var(--io-shadow-md); pointer-events:none;">{{ toastMessage }}</div>
+      </sc-if>
+
+      <!-- Tab bar -->
+      <div style="flex-shrink:0; display:flex; border-top:1px solid var(--io-border); background:var(--io-white); padding:8px 4px calc(env(safe-area-inset-bottom, 0px) + 20px);">
+        <button onClick="{{ goSignin }}" style="flex:1; background:transparent; border:none; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px; cursor:pointer; color:{{ tabColorSignin }};">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+          <span style="font-size:11px;">Sign in/out</span>
+        </button>
+        <button onClick="{{ goOccupancy }}" style="flex:1; background:transparent; border:none; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px; cursor:pointer; color:{{ tabColorOccupancy }};">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span style="font-size:11px;">Occupancy</span>
+        </button>
+        <button onClick="{{ goMuster }}" style="flex:1; background:transparent; border:none; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px; cursor:pointer; color:{{ tabColorMuster }};">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span style="font-size:11px;">Muster</span>
+        </button>
+        <button onClick="{{ goAdmin }}" style="flex:1; background:transparent; border:none; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px; cursor:pointer; color:{{ tabColorAdmin }};">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="4" x2="14" y2="4"></line><line x1="10" y1="4" x2="3" y2="4"></line><line x1="21" y1="12" x2="12" y2="12"></line><line x1="8" y1="12" x2="3" y2="12"></line><line x1="21" y1="20" x2="16" y2="20"></line><line x1="12" y1="20" x2="3" y2="20"></line><line x1="14" y1="2" x2="14" y2="6"></line><line x1="8" y1="10" x2="8" y2="14"></line><line x1="16" y1="18" x2="16" y2="22"></line></svg>
+          <span style="font-size:11px;">Admin</span>
+        </button>
+      </div>
+
+    </div>
+  </x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STORAGE_KEY = 'io-attendance-state-v1';
+
+function defaultEmployees() {
+  const now = Date.now();
+  const ago = (mins) => now - mins * 60000;
+  return [
+    { id: 1, name: 'Grace Mackenzie', role: 'Marine Surveyor', sector: 'Maritime', signedIn: true, signInAt: ago(185) },
+    { id: 2, name: 'Callum Reid', role: 'ROV Pilot Technician', sector: 'Offshore', signedIn: true, signInAt: ago(142) },
+    { id: 3, name: 'Priya Anand', role: 'UAV Inspection Lead', sector: 'Renewables', signedIn: true, signInAt: ago(97) },
+    { id: 4, name: 'Ewan Fraser', role: 'Site Manager', sector: 'Offshore', signedIn: true, signInAt: ago(64) },
+    { id: 5, name: 'Fiona Ross', role: 'Marine Warranty Engineer', sector: 'Maritime', signedIn: true, signInAt: ago(33) },
+    { id: 6, name: 'Daniel Okafor', role: 'Construction Support Engineer', sector: 'Offshore', signedIn: true, signInAt: ago(12) },
+    { id: 7, name: 'Isla Campbell', role: 'Moorings Engineer', sector: 'Maritime', signedIn: false, signInAt: null },
+    { id: 8, name: 'Ahmed Hussain', role: 'Wind Farm Technician', sector: 'Renewables', signedIn: false, signInAt: null },
+    { id: 9, name: 'Lucy Bennett', role: 'Compliance & Risk Advisor', sector: 'Maritime', signedIn: false, signInAt: null },
+    { id: 10, name: 'Tom Sutherland', role: 'Statutory Inspection Engineer', sector: 'Offshore', signedIn: false, signInAt: null },
+  ];
+}
+
+class Component extends DCLogic {
+  state = {
+    activeTab: 'signin',
+    employees: defaultEmployees(),
+    selectedId: null,
+    muster: null,
+    toastMessage: null,
+    now: Date.now(),
+    formName: '',
+    formRole: '',
+    formSector: 'Offshore',
+    nextId: 11,
+  };
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        this.setState({
+          employees: saved.employees || this.state.employees,
+          muster: saved.muster || null,
+          nextId: saved.nextId || this.state.nextId,
+        });
+      }
+    } catch (e) {}
+    this._tick = setInterval(() => this.setState({ now: Date.now() }), 30000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._tick);
+    clearTimeout(this._toastTimer);
+  }
+
+  persist(extra) {
+    const employees = extra && extra.employees ? extra.employees : this.state.employees;
+    const muster = extra && 'muster' in extra ? extra.muster : this.state.muster;
+    const nextId = extra && extra.nextId ? extra.nextId : this.state.nextId;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ employees, muster, nextId }));
+    } catch (e) {}
+  }
+
+  showToast(message) {
+    clearTimeout(this._toastTimer);
+    this.setState({ toastMessage: message });
+    this._toastTimer = setTimeout(() => this.setState({ toastMessage: null }), 2200);
+  }
+
+  setTab(tab) {
+    this.setState({ activeTab: tab, selectedId: null });
+  }
+
+  toggleSelect(id) {
+    this.setState((s) => ({ selectedId: s.selectedId === id ? null : id }));
+  }
+
+  confirmToggle(id) {
+    const employees = this.state.employees.map((e) => {
+      if (e.id !== id) return e;
+      const signingIn = !e.signedIn;
+      return { ...e, signedIn: signingIn, signInAt: signingIn ? Date.now() : null };
+    });
+    const emp = employees.find((e) => e.id === id);
+    this.setState({ employees, selectedId: null });
+    this.persist({ employees });
+    this.showToast(emp.name + (emp.signedIn ? ' signed in at ' + this.formatTime(emp.signInAt) : ' signed out'));
+  }
+
+  startMuster() {
+    const roster = this.state.employees
+      .filter((e) => e.signedIn)
+      .map((e) => ({ id: e.id, accounted: false }));
+    const muster = { startedAt: Date.now(), roster };
+    this.setState({ muster });
+    this.persist({ muster });
+  }
+
+  toggleAccounted(id) {
+    if (!this.state.muster) return;
+    const roster = this.state.muster.roster.map((r) => (r.id === id ? { ...r, accounted: !r.accounted } : r));
+    const muster = { ...this.state.muster, roster };
+    this.setState({ muster });
+    this.persist({ muster });
+  }
+
+  endMuster() {
+    this.setState({ muster: null });
+    this.persist({ muster: null });
+  }
+
+  addEmployee() {
+    const name = this.state.formName.trim();
+    const role = this.state.formRole.trim();
+    if (!name || !role) return;
+    const employee = {
+      id: this.state.nextId,
+      name,
+      role,
+      sector: this.state.formSector,
+      signedIn: false,
+      signInAt: null,
+    };
+    const employees = [...this.state.employees, employee];
+    const nextId = this.state.nextId + 1;
+    this.setState({ employees, nextId, formName: '', formRole: '', formSector: 'Offshore' });
+    this.persist({ employees, nextId });
+  }
+
+  removeEmployee(id) {
+    const employees = this.state.employees.filter((e) => e.id !== id);
+    this.setState({ employees });
+    this.persist({ employees });
+  }
+
+  resetDemo() {
+    const employees = defaultEmployees();
+    this.setState({ employees, muster: null, nextId: 11, selectedId: null });
+    this.persist({ employees, muster: null, nextId: 11 });
+  }
+
+  formatTime(ts) {
+    if (!ts) return '';
+    return new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  formatElapsed(ts) {
+    if (!ts) return '';
+    const mins = Math.max(0, Math.round((this.state.now - ts) / 60000));
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    if (h === 0) return m + 'm';
+    return h + 'h ' + m + 'm';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const activeTab = s.activeTab;
+    const totalCount = s.employees.length;
+
+    const employees = s.employees.map((e) => {
+      const isSelected = s.selectedId === e.id;
+      return {
+        ...e,
+        roleLine: e.role + ' \u00b7 ' + e.sector,
+        isSelected,
+        rowBg: isSelected ? 'var(--io-navy-06)' : 'var(--io-white)',
+        dotBg: e.signedIn ? 'var(--io-bright-blue)' : 'transparent',
+        dotBorder: e.signedIn ? 'var(--io-bright-blue)' : 'var(--io-blue-grey)',
+        tagBg: e.signedIn ? 'rgba(5,94,221,0.12)' : 'var(--io-blue-grey-10)',
+        tagColor: e.signedIn ? 'var(--io-bright-blue)' : 'var(--io-blue-grey)',
+        tagLabel: e.signedIn ? 'In' : 'Out',
+        actionLabel: e.signedIn ? 'Sign Out' : 'Sign In',
+        onSelect: () => this.toggleSelect(e.id),
+        onConfirm: () => this.confirmToggle(e.id),
+        onRemove: () => this.removeEmployee(e.id),
+      };
+    });
+
+    const signedInEmployees = s.employees.filter((e) => e.signedIn).sort((a, b) => a.signInAt - b.signInAt);
+    const signedInCount = signedInEmployees.length;
+
+    const signedInList = signedInEmployees.map((e) => ({
+      ...e,
+      roleLine: e.role + ' \u00b7 ' + e.sector,
+      since: this.formatTime(e.signInAt),
+      elapsed: this.formatElapsed(e.signInAt),
+    }));
+
+    const sectors = ['Offshore', 'Maritime', 'Renewables'];
+    const sectorStats = sectors.map((label) => ({
+      label,
+      count: signedInEmployees.filter((e) => e.sector === label).length,
+    }));
+
+    const muster = s.muster;
+    const musterActive = !!muster;
+    const musterRoster = muster
+      ? muster.roster.map((r) => {
+          const emp = s.employees.find((e) => e.id === r.id) || { name: 'Unknown', role: '', sector: '' };
+          return {
+            ...r,
+            name: emp.name,
+            roleLine: emp.role + ' \u00b7 ' + emp.sector,
+            rowOpacity: r.accounted ? '0.5' : '1',
+            circleBg: r.accounted ? 'var(--io-bright-blue)' : 'transparent',
+            circleBorder: r.accounted ? 'var(--io-bright-blue)' : 'var(--io-blue-grey)',
+            onToggle: () => this.toggleAccounted(r.id),
+          };
+        })
+      : [];
+    const musterTotal = musterRoster.length;
+    const musterAccountedCount = musterRoster.filter((r) => r.accounted).length;
+    const allAccounted = musterTotal > 0 && musterAccountedCount === musterTotal;
+    const musterProgressPct = musterTotal === 0 ? '0%' : Math.round((musterAccountedCount / musterTotal) * 100) + '%';
+
+    const titles = {
+      signin: ['Sign in / out', 'Tap your name to update your status'],
+      occupancy: ["Who's in", 'Live building occupancy'],
+      muster: ['Muster roll call', 'For use by the Fire Warden'],
+      admin: ['Manage staff', 'Add or remove employees'],
+    };
+    const [screenTitle, screenSubtitle] = titles[activeTab];
+
+    const activeColor = 'var(--io-bright-blue)';
+    const inactiveColor = 'var(--io-blue-grey)';
+
+    return {
+      clockLabel: new Date(s.now).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+      screenTitle,
+      screenSubtitle,
+      isSignin: activeTab === 'signin',
+      isOccupancy: activeTab === 'occupancy',
+      isMuster: activeTab === 'muster',
+      isAdmin: activeTab === 'admin',
+      employees,
+      totalCount,
+      signedInCount,
+      signedInList,
+      hasSignedIn: signedInCount > 0,
+      noSignedIn: signedInCount === 0,
+      sectorStats,
+      musterIdle: !musterActive,
+      musterActive,
+      musterStarted: muster ? this.formatTime(muster.startedAt) : '',
+      musterRoster,
+      musterTotal,
+      musterAccountedCount,
+      musterProgressPct,
+      allAccounted,
+      toastMessage: s.toastMessage,
+      formName: s.formName,
+      formRole: s.formRole,
+      formSector: s.formSector,
+      setFormName: (e) => this.setState({ formName: e.target.value }),
+      setFormRole: (e) => this.setState({ formRole: e.target.value }),
+      setFormSector: (e) => this.setState({ formSector: e.target.value }),
+      addEmployee: () => this.addEmployee(),
+      startMuster: () => this.startMuster(),
+      endMuster: () => this.endMuster(),
+      resetDemo: () => this.resetDemo(),
+      goSignin: () => this.setTab('signin'),
+      goOccupancy: () => this.setTab('occupancy'),
+      goMuster: () => this.setTab('muster'),
+      goAdmin: () => this.setTab('admin'),
+      tabColorSignin: activeTab === 'signin' ? activeColor : inactiveColor,
+      tabColorOccupancy: activeTab === 'occupancy' ? activeColor : inactiveColor,
+      tabColorMuster: activeTab === 'muster' ? activeColor : inactiveColor,
+      tabColorAdmin: activeTab === 'admin' ? activeColor : inactiveColor,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

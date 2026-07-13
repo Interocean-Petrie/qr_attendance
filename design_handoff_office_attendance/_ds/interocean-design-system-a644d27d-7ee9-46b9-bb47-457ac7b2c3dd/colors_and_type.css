@@ -1,0 +1,289 @@
+/* ============================================================
+   Interocean Design System
+   colors_and_type.css
+   ------------------------------------------------------------
+   Three colours. One typeface. British English. Calm.
+   ============================================================ */
+
+/* Outfit — primary brand typeface, Light (300) is the default.
+   Loaded from the brand-supplied variable font file in fonts/.
+   Arial Regular is the system fallback. */
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('fonts/Outfit-VariableFont_wght.ttf') format('truetype-variations'),
+       url('fonts/Outfit-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('fonts/arial.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* -----------------------------------------------------------
+     BRAND COLOURS — these three plus white. No others allowed.
+     ----------------------------------------------------------- */
+  --io-navy:        #2A4066;  /* Primary, headings, dark surfaces */
+  --io-bright-blue: #055EDD;  /* Accent, CTAs, links, wordmark */
+  --io-blue-grey:   #5479A1;  /* Body, secondary, dividers */
+  --io-white:       #FFFFFF;
+
+  /* Tints derived from the brand palette (alphas of the three blues).
+     Allowed because they don't introduce new hues. */
+  --io-navy-90:     rgba(42, 64, 102, 0.90);
+  --io-navy-60:     rgba(42, 64, 102, 0.60);
+  --io-navy-30:     rgba(42, 64, 102, 0.30);
+  --io-navy-12:     rgba(42, 64, 102, 0.12);
+  --io-navy-06:     rgba(42, 64, 102, 0.06);
+
+  --io-bright-blue-darker:  #0449B0;   /* hover */
+  --io-bright-blue-darkest: #033685;   /* active */
+
+  --io-blue-grey-60: rgba(84, 121, 161, 0.60);
+  --io-blue-grey-30: rgba(84, 121, 161, 0.30);
+  --io-blue-grey-20: rgba(84, 121, 161, 0.20);
+  --io-blue-grey-10: rgba(84, 121, 161, 0.10);
+
+  /* -----------------------------------------------------------
+     SEMANTIC COLOURS
+     ----------------------------------------------------------- */
+  --io-fg-1:        var(--io-navy);          /* primary text */
+  --io-fg-2:        var(--io-blue-grey);     /* secondary text */
+  --io-fg-on-dark:  var(--io-white);
+  --io-fg-link:     var(--io-bright-blue);
+  --io-fg-link-hover: var(--io-bright-blue-darker);
+
+  --io-bg-1:        var(--io-white);         /* primary surface */
+  --io-bg-2:        #F6F8FB;                 /* very subtle surface (white tinted with navy) */
+  --io-bg-dark:     var(--io-navy);          /* inverted surface */
+
+  --io-border:      var(--io-blue-grey-20);
+  --io-border-strong: var(--io-navy);
+
+  /* -----------------------------------------------------------
+     TYPOGRAPHY TOKENS
+     ----------------------------------------------------------- */
+  --io-font-sans: 'Outfit', Arial, Helvetica, sans-serif;
+  --io-font-fallback: Arial, Helvetica, sans-serif;
+
+  --io-weight-light:    300;
+  --io-weight-regular:  400;
+  --io-weight-medium:   500;
+  --io-weight-semibold: 600;
+
+  /* Modular scale, roughly 1.2 step, anchored at 16px body */
+  --io-fs-12:  0.75rem;     /* 12 — micro labels */
+  --io-fs-14:  0.875rem;    /* 14 — caption */
+  --io-fs-16:  1rem;        /* 16 — body */
+  --io-fs-18:  1.125rem;    /* 18 — lead */
+  --io-fs-20:  1.25rem;     /* 20 — h6 */
+  --io-fs-24:  1.5rem;      /* 24 — h5 */
+  --io-fs-28:  1.75rem;     /* 28 — h4 */
+  --io-fs-34:  2.125rem;    /* 34 — h3 */
+  --io-fs-44:  2.75rem;     /* 44 — h2 */
+  --io-fs-56:  3.5rem;      /* 56 — h1 */
+  --io-fs-72:  4.5rem;      /* 72 — display */
+
+  --io-lh-tight:   1.15;
+  --io-lh-snug:    1.3;
+  --io-lh-normal:  1.45;
+  --io-lh-loose:   1.6;
+
+  --io-tracking-tight:  -0.01em;
+  --io-tracking-normal: 0;
+  --io-tracking-wide:   0.06em;
+  --io-tracking-eyebrow: 0.12em;
+
+  /* -----------------------------------------------------------
+     SPACING — 8px base, with a 4px half-step
+     ----------------------------------------------------------- */
+  --io-space-1:  4px;
+  --io-space-2:  8px;
+  --io-space-3:  12px;
+  --io-space-4:  16px;
+  --io-space-5:  24px;
+  --io-space-6:  32px;
+  --io-space-7:  48px;
+  --io-space-8:  64px;
+  --io-space-9:  96px;
+  --io-space-10: 128px;
+
+  /* -----------------------------------------------------------
+     RADIUS
+     ----------------------------------------------------------- */
+  --io-radius-xs: 2px;
+  --io-radius-sm: 4px;       /* buttons, inputs */
+  --io-radius-md: 8px;       /* cards */
+  --io-radius-lg: 16px;      /* logo-mark style corner accent */
+  --io-radius-full: 9999px;  /* tiny tags only */
+
+  /* -----------------------------------------------------------
+     SHADOWS — navy-tinted, sparingly used
+     ----------------------------------------------------------- */
+  --io-shadow-sm: 0 1px 2px rgba(42,64,102,0.06), 0 1px 3px rgba(42,64,102,0.08);
+  --io-shadow-md: 0 4px 6px rgba(42,64,102,0.05), 0 10px 15px rgba(42,64,102,0.08);
+  --io-shadow-lg: 0 25px 50px rgba(42,64,102,0.18);
+
+  /* -----------------------------------------------------------
+     MOTION
+     ----------------------------------------------------------- */
+  --io-ease:       cubic-bezier(0.4, 0, 0.2, 1);
+  --io-ease-out:   cubic-bezier(0, 0, 0.2, 1);
+  --io-duration-1: 150ms;   /* hover / micro */
+  --io-duration-2: 250ms;   /* enter / fade */
+  --io-duration-3: 400ms;   /* page transitions */
+
+  /* -----------------------------------------------------------
+     LAYOUT
+     ----------------------------------------------------------- */
+  --io-container-max: 1240px;
+  --io-gutter:        24px;
+}
+
+/* ==============================================================
+   SEMANTIC ELEMENT STYLES
+   Apply by importing this file globally — elements get sensible
+   defaults that match the brand without further work.
+   ============================================================== */
+
+body, .io-body {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: var(--io-fs-16);
+  line-height: var(--io-lh-normal);
+  color: var(--io-fg-1);
+  background: var(--io-bg-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.io-display {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: var(--io-fs-72);
+  line-height: var(--io-lh-tight);
+  letter-spacing: var(--io-tracking-tight);
+  color: var(--io-navy);
+}
+
+h1, .io-h1 {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: var(--io-fs-56);
+  line-height: var(--io-lh-tight);
+  letter-spacing: var(--io-tracking-tight);
+  color: var(--io-navy);
+  margin: 0 0 var(--io-space-5);
+}
+
+h2, .io-h2 {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: var(--io-fs-44);
+  line-height: var(--io-lh-tight);
+  color: var(--io-navy);
+  margin: 0 0 var(--io-space-5);
+}
+
+h3, .io-h3 {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: var(--io-fs-34);
+  line-height: var(--io-lh-snug);
+  color: var(--io-navy);
+  margin: 0 0 var(--io-space-4);
+}
+
+h4, .io-h4 {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-regular);
+  font-size: var(--io-fs-28);
+  line-height: var(--io-lh-snug);
+  color: var(--io-navy);
+  margin: 0 0 var(--io-space-4);
+}
+
+h5, .io-h5 {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-medium);
+  font-size: var(--io-fs-20);
+  line-height: var(--io-lh-snug);
+  color: var(--io-navy);
+  margin: 0 0 var(--io-space-3);
+}
+
+h6, .io-h6 {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-medium);
+  font-size: var(--io-fs-16);
+  line-height: var(--io-lh-snug);
+  color: var(--io-navy);
+  margin: 0 0 var(--io-space-2);
+}
+
+p, .io-body-text {
+  font-family: var(--io-font-sans);
+  font-weight: var(--io-weight-light);
+  font-size: var(--io-fs-16);
+  line-height: var(--io-lh-normal);
+  color: var(--io-fg-2);
+  margin: 0 0 var(--io-space-4);
+}
+
+.io-lead {
+  font-size: var(--io-fs-18);
+  font-weight: var(--io-weight-light);
+  color: var(--io-fg-2);
+  line-height: var(--io-lh-normal);
+}
+
+.io-caption {
+  font-size: var(--io-fs-14);
+  font-weight: var(--io-weight-regular);
+  color: var(--io-fg-2);
+}
+
+.io-eyebrow {
+  font-size: var(--io-fs-12);
+  font-weight: var(--io-weight-medium);
+  letter-spacing: var(--io-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--io-bright-blue);
+}
+
+a, .io-link {
+  color: var(--io-fg-link);
+  text-decoration: none;
+  transition: color var(--io-duration-1) var(--io-ease);
+}
+a:hover, .io-link:hover {
+  color: var(--io-fg-link-hover);
+  text-decoration: underline;
+}
+a:focus-visible {
+  outline: 2px solid var(--io-bright-blue);
+  outline-offset: 2px;
+  border-radius: var(--io-radius-xs);
+}
+
+code, kbd, samp {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  color: var(--io-navy);
+  background: var(--io-blue-grey-10);
+  padding: 0.1em 0.35em;
+  border-radius: var(--io-radius-xs);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--io-border);
+  margin: var(--io-space-6) 0;
+}

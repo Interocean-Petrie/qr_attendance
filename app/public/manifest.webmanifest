@@ -1,0 +1,11 @@
+{
+  "name": "Interocean Attendance",
+  "short_name": "Attendance",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#2A4066",
+  "theme_color": "#2A4066",
+  "icons": [
+    { "src": "./logo-full.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
