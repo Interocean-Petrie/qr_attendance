@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const TITLES: Record<string, [string, string]> = {
-  signin: ['Sign in / out', 'Tap your name to update your status'],
+  signin: ['Sign in / out', 'Select Employee or Guest to continue'],
   occupancy: ["Who's in", 'Live building occupancy'],
   muster: ['Muster roll call', 'For use by the Fire Warden'],
   admin: ['Manage staff', 'Add or remove employees'],

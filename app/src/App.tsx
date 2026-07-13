@@ -4,11 +4,12 @@ import { Header } from './components/Header';
 import { TabBar, type Tab } from './components/TabBar';
 import { Toast } from './components/Toast';
 import { PasscodeGate } from './components/PasscodeGate';
-import { SignIn } from './screens/SignIn';
+import { SignInLanding } from './screens/SignInLanding';
 import { Occupancy } from './screens/Occupancy';
 import { Muster } from './screens/Muster';
 import { Admin } from './screens/Admin';
 import { useAttendance } from './hooks/useAttendance';
+import { useGuests } from './hooks/useGuests';
 import { useMuster } from './hooks/useMuster';
 import { useToast } from './hooks/useToast';
 import { useAdminGate } from './hooks/useAdminGate';
@@ -16,8 +17,12 @@ import { useAdminGate } from './hooks/useAdminGate';
 function App() {
   const [tab, setTab] = useState<Tab>('signin');
   const { employees, signInOrOut, addEmployee, removeEmployee } = useAttendance();
+  const { guests, signInGuest, signOutGuest } = useGuests();
   const signedInEmployees = employees.filter((e) => e.signedIn);
-  const { muster, roster, startMuster, endMuster, toggleAccounted } = useMuster(signedInEmployees);
+  const { muster, roster, startMuster, endMuster, toggleAccounted } = useMuster(
+    signedInEmployees,
+    guests,
+  );
   const { toastMessage, showToast } = useToast();
   const { unlocked, tryUnlock } = useAdminGate();
 
@@ -33,12 +38,19 @@ function App() {
         ) : (
           <>
             {tab === 'signin' && (
-              <SignIn employees={employees} onSignInOrOut={signInOrOut} showToast={showToast} />
+              <SignInLanding
+                employees={employees}
+                onSignInOrOut={signInOrOut}
+                guests={guests}
+                signInGuest={signInGuest}
+                signOutGuest={signOutGuest}
+                showToast={showToast}
+              />
             )}
-            {tab === 'occupancy' && <Occupancy employees={employees} />}
+            {tab === 'occupancy' && <Occupancy employees={employees} guests={guests} />}
             {tab === 'muster' && (
               <Muster
-                signedInEmployees={signedInEmployees}
+                occupancyCount={signedInEmployees.length + guests.length}
                 muster={muster}
                 roster={roster}
                 startMuster={startMuster}

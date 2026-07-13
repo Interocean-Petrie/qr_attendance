@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import type { EmployeeStatus } from '../types';
 import type { MusterRosterRow } from '../hooks/useMuster';
 import type { Muster as MusterType } from '../types';
 import { formatTime } from '../lib/format';
 import { AlertCircleIcon, CheckIcon } from '../components/Icons';
 
 interface Props {
-  signedInEmployees: EmployeeStatus[];
+  occupancyCount: number;
   muster: MusterType | null;
   roster: MusterRosterRow[];
   startMuster: () => Promise<void>;
@@ -15,7 +14,7 @@ interface Props {
 }
 
 export function Muster({
-  signedInEmployees,
+  occupancyCount,
   muster,
   roster,
   startMuster,
@@ -35,7 +34,7 @@ export function Muster({
           Creates a roll call of everyone currently signed in. Use this during a fire drill or
           emergency evacuation.
         </div>
-        <div className="io-muster-count">{signedInEmployees.length} people currently signed in</div>
+        <div className="io-muster-count">{occupancyCount} people currently signed in</div>
         <button
           className="io-btn-primary"
           disabled={busy}
@@ -88,7 +87,7 @@ export function Muster({
         >
           <div style={{ minWidth: 0 }}>
             <div className="io-list-name">{r.name}</div>
-            <div className="io-row-caption">{r.role}</div>
+            <div className="io-row-caption">{r.caption}</div>
           </div>
           <span className={`io-muster-circle${r.accounted ? ' accounted' : ''}`}>
             {r.accounted && <CheckIcon size={15} color="var(--io-white)" />}

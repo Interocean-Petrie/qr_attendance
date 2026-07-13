@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import type { Muster, EmployeeStatus } from '../types';
+import type { Muster, EmployeeStatus, Guest } from '../types';
 
 export interface MusterRosterRow {
   id: string;
-  employee_id: string;
   accounted: boolean;
   name: string;
-  role: string;
+  caption: string;
 }
 
-export function useMuster(signedInEmployees: EmployeeStatus[]) {
+export function useMuster(signedInEmployees: EmployeeStatus[], onSiteGuests: Guest[]) {
   const [muster, setMuster] = useState<Muster | null>(null);
   const [roster, setRoster] = useState<MusterRosterRow[]>([]);
 
@@ -37,7 +36,7 @@ export function useMuster(signedInEmployees: EmployeeStatus[]) {
 
     const { data: rosterRows, error: rosterError } = await supabase
       .from('muster_roster')
-      .select('id, employee_id, accounted, employees(name, role)')
+      .select('id, accounted, employees(name, role), guest_visits(name, company, host)')
       .eq('muster_id', activeMuster.id);
 
     if (rosterError) {
@@ -46,13 +45,18 @@ export function useMuster(signedInEmployees: EmployeeStatus[]) {
     }
 
     setRoster(
-      (rosterRows ?? []).map((r: any) => ({
-        id: r.id,
-        employee_id: r.employee_id,
-        accounted: r.accounted,
-        name: r.employees?.name ?? 'Unknown',
-        role: r.employees?.role ?? '',
-      })),
+      (rosterRows ?? []).map((r: any) => {
+        if (r.employees) {
+          return { id: r.id, accounted: r.accounted, name: r.employees.name, caption: r.employees.role };
+        }
+        const guest = r.guest_visits;
+        return {
+          id: r.id,
+          accounted: r.accounted,
+          name: guest?.name ?? 'Unknown guest',
+          caption: guest ? `Guest · visiting ${guest.host}` : 'Guest',
+        };
+      }),
     );
   }, []);
 
@@ -75,12 +79,16 @@ export function useMuster(signedInEmployees: EmployeeStatus[]) {
       .select()
       .single();
     if (error || !newMuster) throw error;
-    if (signedInEmployees.length > 0) {
-      const rows = signedInEmployees.map((e) => ({ muster_id: newMuster.id, employee_id: e.id }));
+
+    const rows = [
+      ...signedInEmployees.map((e) => ({ muster_id: newMuster.id, employee_id: e.id })),
+      ...onSiteGuests.map((g) => ({ muster_id: newMuster.id, guest_visit_id: g.id })),
+    ];
+    if (rows.length > 0) {
       const { error: rosterError } = await supabase.from('muster_roster').insert(rows);
       if (rosterError) throw rosterError;
     }
-  }, [signedInEmployees]);
+  }, [signedInEmployees, onSiteGuests]);
 
   const endMuster = useCallback(async () => {
     if (!muster) return;

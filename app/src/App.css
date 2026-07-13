@@ -137,6 +137,14 @@
   font-size: 11px;
 }
 
+/* Landing chooser (Employee / Guest) */
+.io-landing-picker {
+  padding: 20px 20px 4px;
+}
+.io-landing-picker .io-input {
+  margin-bottom: 0;
+}
+
 /* Sign-in list rows */
 .io-row {
   display: flex;
@@ -202,7 +210,7 @@
 
 /* Occupancy */
 .io-stat-row {
-  padding: 20px 20px 20px;
+  padding: 20px 20px 8px;
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -216,6 +224,28 @@
 .io-stat-of {
   font-size: 16px;
   color: var(--io-blue-grey);
+}
+.io-split-stats {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 20px;
+}
+.io-split-card {
+  flex: 1;
+  background: var(--io-bg-2);
+  border-radius: var(--io-radius-md);
+  padding: 12px;
+  text-align: center;
+}
+.io-split-count {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--io-navy);
+}
+.io-split-label {
+  font-size: 11px;
+  color: var(--io-blue-grey);
+  margin-top: 2px;
 }
 .io-section-label {
   padding: 4px 20px 10px;

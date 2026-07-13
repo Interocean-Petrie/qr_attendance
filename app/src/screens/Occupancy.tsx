@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
-import type { EmployeeStatus } from '../types';
+import type { EmployeeStatus, Guest, Occupant } from '../types';
 import { formatElapsed, formatTime } from '../lib/format';
 
-export function Occupancy({ employees }: { employees: EmployeeStatus[] }) {
+interface Props {
+  employees: EmployeeStatus[];
+  guests: Guest[];
+}
+
+export function Occupancy({ employees, guests }: Props) {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -10,30 +15,55 @@ export function Occupancy({ employees }: { employees: EmployeeStatus[] }) {
     return () => clearInterval(id);
   }, []);
 
-  const signedIn = employees
-    .filter((e) => e.signedIn)
-    .sort((a, b) => new Date(a.signInAt!).getTime() - new Date(b.signInAt!).getTime());
+  const signedInEmployees = employees.filter((e) => e.signedIn);
+
+  const occupants: Occupant[] = [
+    ...signedInEmployees.map((e) => ({
+      id: e.id,
+      kind: 'employee' as const,
+      name: e.name,
+      caption: e.role,
+      signInAt: e.signInAt!,
+    })),
+    ...guests.map((g) => ({
+      id: g.id,
+      kind: 'guest' as const,
+      name: g.name,
+      caption: `Guest · visiting ${g.host}`,
+      signInAt: g.signed_in_at,
+    })),
+  ].sort((a, b) => new Date(a.signInAt).getTime() - new Date(b.signInAt).getTime());
 
   return (
     <div>
       <div className="io-stat-row">
-        <span className="io-stat-number">{signedIn.length}</span>
-        <span className="io-stat-of">of {employees.length} in the building</span>
+        <span className="io-stat-number">{occupants.length}</span>
+        <span className="io-stat-of">in the building</span>
+      </div>
+      <div className="io-split-stats">
+        <div className="io-split-card">
+          <div className="io-split-count">{signedInEmployees.length}</div>
+          <div className="io-split-label">Staff</div>
+        </div>
+        <div className="io-split-card">
+          <div className="io-split-count">{guests.length}</div>
+          <div className="io-split-label">Guests</div>
+        </div>
       </div>
       <div className="io-section-label">In the building</div>
-      {signedIn.length > 0 ? (
-        signedIn.map((emp) => (
-          <div key={emp.id} className="io-list-row">
+      {occupants.length > 0 ? (
+        occupants.map((o) => (
+          <div key={o.id} className="io-list-row">
             <div style={{ minWidth: 0 }}>
-              <div className="io-list-name">{emp.name}</div>
-              <div className="io-row-caption">{emp.role}</div>
+              <div className="io-list-name">{o.name}</div>
+              <div className="io-row-caption">{o.caption}</div>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
               <div style={{ fontSize: 13, color: 'var(--io-navy)' }}>
-                since {formatTime(emp.signInAt)}
+                since {formatTime(o.signInAt)}
               </div>
               <div style={{ fontSize: 12, color: 'var(--io-blue-grey)', marginTop: 2 }}>
-                {formatElapsed(emp.signInAt, now)}
+                {formatElapsed(o.signInAt, now)}
               </div>
             </div>
           </div>
