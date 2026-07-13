@@ -8,7 +8,6 @@ export interface MusterRosterRow {
   accounted: boolean;
   name: string;
   role: string;
-  sector: string;
 }
 
 export function useMuster(signedInEmployees: EmployeeStatus[]) {
@@ -38,7 +37,7 @@ export function useMuster(signedInEmployees: EmployeeStatus[]) {
 
     const { data: rosterRows, error: rosterError } = await supabase
       .from('muster_roster')
-      .select('id, employee_id, accounted, employees(name, role, sector)')
+      .select('id, employee_id, accounted, employees(name, role)')
       .eq('muster_id', activeMuster.id);
 
     if (rosterError) {
@@ -53,7 +52,6 @@ export function useMuster(signedInEmployees: EmployeeStatus[]) {
         accounted: r.accounted,
         name: r.employees?.name ?? 'Unknown',
         role: r.employees?.role ?? '',
-        sector: r.employees?.sector ?? '',
       })),
     );
   }, []);

@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import type { EmployeeStatus, Sector } from '../types';
+import type { EmployeeStatus } from '../types';
 import { PlusIcon, TrashIcon } from '../components/Icons';
 
 interface Props {
   employees: EmployeeStatus[];
-  addEmployee: (name: string, role: string, sector: Sector) => Promise<void>;
+  addEmployee: (name: string, role: string) => Promise<void>;
   removeEmployee: (id: string) => Promise<void>;
 }
 
 export function Admin({ employees, addEmployee, removeEmployee }: Props) {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
-  const [sector, setSector] = useState<Sector>('Offshore');
   const [busy, setBusy] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
 
@@ -21,10 +20,9 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
     if (!trimmedName || !trimmedRole) return;
     setBusy(true);
     try {
-      await addEmployee(trimmedName, trimmedRole, sector);
+      await addEmployee(trimmedName, trimmedRole);
       setName('');
       setRole('');
-      setSector('Offshore');
     } finally {
       setBusy(false);
     }
@@ -55,15 +53,6 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
           value={role}
           onChange={(e) => setRole(e.target.value)}
         />
-        <select
-          className="io-input"
-          value={sector}
-          onChange={(e) => setSector(e.target.value as Sector)}
-        >
-          <option value="Offshore">Offshore</option>
-          <option value="Maritime">Maritime</option>
-          <option value="Renewables">Renewables</option>
-        </select>
         <button className="io-btn-primary with-icon" disabled={busy} onClick={handleAdd}>
           <PlusIcon />
           Add Employee
@@ -74,9 +63,7 @@ export function Admin({ employees, addEmployee, removeEmployee }: Props) {
         <div key={emp.id} className="io-list-row">
           <div style={{ minWidth: 0 }}>
             <div className="io-list-name">{emp.name}</div>
-            <div className="io-row-caption">
-              {emp.role} &middot; {emp.sector}
-            </div>
+            <div className="io-row-caption">{emp.role}</div>
           </div>
           <button
             className="io-remove-btn"

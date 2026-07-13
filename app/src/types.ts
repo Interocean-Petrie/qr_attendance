@@ -1,10 +1,7 @@
-export type Sector = 'Offshore' | 'Maritime' | 'Renewables';
-
 export interface Employee {
   id: string;
   name: string;
   role: string;
-  sector: Sector;
 }
 
 export interface EmployeeStatus extends Employee {

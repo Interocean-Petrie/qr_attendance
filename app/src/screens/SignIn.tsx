@@ -40,9 +40,7 @@ export function SignIn({ employees, onSignInOrOut, showToast }: Props) {
               <span className={`io-status-dot${emp.signedIn ? ' in' : ''}`} />
               <div style={{ minWidth: 0 }}>
                 <div className="io-row-name">{emp.name}</div>
-                <div className="io-row-caption">
-                  {emp.role} &middot; {emp.sector}
-                </div>
+                <div className="io-row-caption">{emp.role}</div>
               </div>
             </div>
             <span className={`io-tag${emp.signedIn ? ' in' : ''}`}>{emp.signedIn ? 'In' : 'Out'}</span>

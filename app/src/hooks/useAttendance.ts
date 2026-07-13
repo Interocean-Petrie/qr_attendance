@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import type { EmployeeStatus, Sector } from '../types';
+import type { EmployeeStatus } from '../types';
 
 export function useAttendance() {
   const [employees, setEmployees] = useState<EmployeeStatus[]>([]);
@@ -20,7 +20,6 @@ export function useAttendance() {
         id: row.id,
         name: row.name,
         role: row.role,
-        sector: row.sector as Sector,
         signedIn: row.last_event_type === 'sign_in',
         signInAt: row.last_event_type === 'sign_in' ? row.last_event_at : null,
       })),
@@ -47,8 +46,8 @@ export function useAttendance() {
     if (error) throw error;
   }, []);
 
-  const addEmployee = useCallback(async (name: string, role: string, sector: Sector) => {
-    const { error } = await supabase.from('employees').insert({ name, role, sector });
+  const addEmployee = useCallback(async (name: string, role: string) => {
+    const { error } = await supabase.from('employees').insert({ name, role });
     if (error) throw error;
   }, []);
 

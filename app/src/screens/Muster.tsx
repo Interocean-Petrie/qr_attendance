@@ -88,9 +88,7 @@ export function Muster({
         >
           <div style={{ minWidth: 0 }}>
             <div className="io-list-name">{r.name}</div>
-            <div className="io-row-caption">
-              {r.role} &middot; {r.sector}
-            </div>
+            <div className="io-row-caption">{r.role}</div>
           </div>
           <span className={`io-muster-circle${r.accounted ? ' accounted' : ''}`}>
             {r.accounted && <CheckIcon size={15} color="var(--io-white)" />}
